@@ -1,4 +1,4 @@
-# 🎬 Telegram File Search Bot
+# 🎬 Telegram File Deliver Bot
 
 A production-ready Telegram bot that indexes files from a private storage channel and lets users search and download them — with fuzzy search, daily limits, favorites, group support, and admin tools. Built with Node.js, MongoDB, and deployed on Render.
 
