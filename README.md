@@ -105,7 +105,7 @@ Create a `.env` file in the root directory. All variables marked **required** mu
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/Aman-20/TelegramFileDeliverBot.git
+git clone https://github.com/Aman-20/telegram-file-deliver-bot.git
 cd your-repo
 
 # 2. Install dependencies
