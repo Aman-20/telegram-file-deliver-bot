@@ -1,4 +1,4 @@
-# 🎬 Telegram File Search Bot
+# 🎬 Telegram File Deliver Bot
 
 A production-ready Telegram bot that indexes files from a private storage channel and lets users search and download them — with fuzzy search, daily limits, favorites, group support, and admin tools. Built with Node.js, MongoDB, and deployed on Render.
 
@@ -105,7 +105,7 @@ Create a `.env` file in the root directory. All variables marked **required** mu
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/Aman-20/TelegramFileDeliverBot.git
+git clone https://github.com/Aman-20/telegram-file-deliver-bot.git
 cd your-repo
 
 # 2. Install dependencies
