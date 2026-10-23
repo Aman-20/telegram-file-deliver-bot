@@ -605,7 +605,8 @@ bot.onText(/\/help/, async (msg) => {
     `🔎 <b>Search:</b> Just type the movie/show name.\n` +
     `   Supports <b>fuzzy search</b> – partial names work too!\n` +
     `❤️ <b>/favorites</b> – Save files for later (max ${FAV_LIMIT_NUM}).\n` +
-    `📊 <b>/trending</b> – See what's popular this week (resets every Monday).\n` +
+    `🗑️ <b>/clearfavorites</b> – Remove all your saved favorites.\n` +
+    `📊 <b>/trending</b> – See what's popular this week.\n` +
     `🆕 <b>/recent</b> – Latest uploads.\n` +
     `👤 <b>/myaccount</b> – Your daily limit (${DAILY_LIMIT_NUM}/day).`;
 
@@ -723,6 +724,32 @@ bot.onText(/\/favorites/, async (msg) => {
     { parse_mode: 'HTML', reply_markup: { inline_keyboard: keyboard } }
   );
   scheduleDelete(bot, msg.chat.id, sent.message_id, PRIVATE_DELETE_TIME);
+});
+
+// 5b. /clearfavorites
+bot.onText(/\/clearfavorites/, async (msg) => {
+  if (msg.chat.type !== 'private') {
+    const sent = await bot.sendMessage(msg.chat.id, `⚠️ <b>This command is for Private Chat only!</b>`, {
+      parse_mode: 'HTML',
+      reply_markup: { inline_keyboard: [[{ text: '🤖 Open Private Chat', url: `https://t.me/${BOT_USERNAME}` }]] }
+    });
+    return scheduleDelete(bot, msg.chat.id, sent.message_id, 10000);
+  }
+
+  const userId = String(msg.from.id);
+  if (await isUserBanned(userId)) return;
+
+  try {
+    const result = await Favorite.deleteMany({ userId });
+    const text = result.deletedCount > 0
+      ? `🗑️ <b>Cleared ${result.deletedCount} favorite(s).</b>`
+      : `ℹ️ You have no saved favorites.`;
+    const sent = await bot.sendMessage(msg.chat.id, text, { parse_mode: 'HTML' });
+    scheduleDelete(bot, msg.chat.id, sent.message_id, 8000);
+  } catch (err) {
+    console.error('clearfavorites error:', err.message);
+    bot.sendMessage(msg.chat.id, '⚠️ Could not clear favorites. Please try again.').catch(() => {});
+  }
 });
 
 // 6. /myaccount
