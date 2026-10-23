@@ -607,7 +607,7 @@ bot.onText(/\/help/, async (msg) => {
     `❤️ <b>/favorites</b> – Save files for later (max ${FAV_LIMIT_NUM}).\n` +
     `🗑️ <b>/clearfavorites</b> – Remove all your saved favorites.\n` +
     `📊 <b>/trending</b> – See what's popular this week.\n` +
-    `🆕 <b>/recent</b> – Latest uploads.\n` +
+    `🆕 <b>/recent</b> – View Latest uploads.\n` +
     `👤 <b>/myaccount</b> – Your daily limit (${DAILY_LIMIT_NUM}/day).`;
 
   if (isAdmin) {
@@ -698,7 +698,7 @@ bot.onText(/\/favorites/, async (msg) => {
   const favs   = await Favorite.find({ userId }).select('customId').lean();
 
   if (!favs.length) {
-    const sent = await bot.sendMessage(msg.chat.id, '❤️ No favorites saved yet. Press the ❤️ button on any file to save it!');
+    const sent = await bot.sendMessage(msg.chat.id, '❤️ No favorites saved yet. Press the button on any file to save it!');
     return scheduleDelete(bot, msg.chat.id, sent.message_id, 8000);
   }
 
