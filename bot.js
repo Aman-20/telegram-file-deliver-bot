@@ -1054,13 +1054,27 @@ command('delete', async (msg, match) => {
     return bot.sendMessage(msg.chat.id, '⚠️ Usage: <code>/delete F0001</code>', { parse_mode: 'HTML' });
   }
 
-  const result = await File.deleteOne({ customId });
-  if (result.deletedCount > 0) await Favorite.deleteMany({ customId }).catch(() => {});
+  const file = await File.findOneAndDelete({ customId }).select('message_id').lean();
+  if (!file) {
+    return bot.sendMessage(msg.chat.id, `❌ <b>Not found:</b> <code>${customId}</code>`, { parse_mode: 'HTML' });
+  }
+
+  await Favorite.deleteMany({ customId }).catch(() => {});
+
+  let channelNote = 'Also removed from the storage channel.';
+  try {
+    await bot.deleteMessage(STORAGE_CHANNEL_ID, file.message_id);
+  } catch (err) {
+    if (/message to delete not found/i.test(err.message || '')) {
+      channelNote = 'The channel post was already gone.';
+    } else {
+      console.warn(`Could not delete channel post for ${customId}:`, err.message);
+      channelNote = '⚠️ Could not delete the channel post. Delete it manually.';
+    }
+  }
 
   bot.sendMessage(msg.chat.id,
-    result.deletedCount > 0
-      ? `🗑️ <b>Deleted:</b> File <code>${customId}</code> has been removed.`
-      : `❌ <b>Not found:</b> <code>${customId}</code>`,
+    `🗑️ <b>Deleted:</b> File <code>${customId}</code> removed from the index.\n${channelNote}`,
     { parse_mode: 'HTML' }
   );
 });
